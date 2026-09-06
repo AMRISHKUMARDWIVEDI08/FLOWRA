@@ -1,8 +1,18 @@
 export type PaymentStatus = 'pending' | 'processing' | 'paid' | 'failed' | 'exception';
+export type PaymentType = 'invoice' | 'request' | 'payment';
+
+export type Verification = {
+  blockNumber?: string;
+  from?: string;
+  to?: string;
+  amount?: string;
+  gasUsed?: string;
+  reason?: string;
+};
 
 export type Payment = {
   id: string;
-  type: 'invoice' | 'request' | 'payment';
+  type: PaymentType;
   reference: string;
   counterparty: string;
   amount: string;
@@ -15,4 +25,5 @@ export type Payment = {
   paymentUrl?: string;
   wallet?: string;
   note?: string;
+  verification?: Verification;
 };
