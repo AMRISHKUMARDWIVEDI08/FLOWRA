@@ -40,8 +40,10 @@ export async function connectArcWallet(): Promise<WalletConnection> {
   return { provider: selected.provider, adapter, address, walletName: selected.info.name };
 }
 
-export async function sendUSDC(connection: WalletConnection, to: string, amount: string): Promise<any> {
+export async function sendUSDC(connection: WalletConnection, to: string, amount: string): Promise<{ txHash?: string; raw: unknown }> {
   if (!/^0x[a-fA-F0-9]{40}$/.test(to)) throw new Error('Recipient address is invalid.');
   if (!/^\d+(\.\d{1,6})?$/.test(amount) || Number(amount) <= 0) throw new Error('Enter a valid USDC amount.');
-  return kit.send({ from: { adapter: connection.adapter, chain: ARC_CHAIN }, to, amount, token: 'USDC' });
+  const raw: any = await kit.send({ from: { adapter: connection.adapter, chain: ARC_CHAIN }, to, amount, token: 'USDC' });
+  const txHash = raw?.steps?.find((step: any) => step?.txHash)?.txHash ?? raw?.txHash;
+  return { txHash, raw };
 }
